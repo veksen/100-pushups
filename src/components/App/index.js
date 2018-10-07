@@ -1,22 +1,53 @@
 // @flow
 
-import React, { Component } from "react";
-import logo from "../../logo.svg";
+import React, { Component, Fragment } from "react";
+import { Wrapper, Title } from "./styles.js";
 
-class App extends Component<{}> {
+type State = {
+  init: boolean,
+  age: ?number
+};
+class App extends Component<null, State> {
+  state = {
+    age: undefined,
+    init: false
+  };
+
+  reset = () => {
+    this.setState({ init: false });
+  };
+
+  init = () => {
+    if (this.state.age && this.state.age > 0) {
+      this.setState({ init: true });
+    }
+  };
+
+  handleChange = (event: KeyboardEvent, input: string) => {
+    if (event.target && event.target.value) {
+      const value = event.target.value;
+      this.setState({ [input]: value });
+    }
+  };
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-            Learn React
-          </a>
-        </header>
-      </div>
+      <Wrapper>
+        {this.state.init === false ? (
+          <Fragment>
+            <Title>Get started</Title>
+            <label htmlFor="age">Age</label>
+            <input id="age" value={this.state.age} onChange={e => this.handleChange(e, "age")} />
+
+            <button onClick={this.init}>Let's go!</button>
+          </Fragment>
+        ) : (
+          <div>
+            You're {this.state.age} years old. This will impact your goals.{" "}
+            <button onClick={this.reset}>Change?</button>
+          </div>
+        )}
+      </Wrapper>
     );
   }
 }
